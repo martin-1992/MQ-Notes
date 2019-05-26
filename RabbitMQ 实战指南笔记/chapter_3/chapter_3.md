@@ -11,7 +11,8 @@
 - 使用 exchangeDeclare 或 queueDeclare 方法来声明队列。交换器和队列是 AMQP 中 high-level 层面的构建模块，应用程序需在使用前先声明（declare）它们。生产者和消费者都能够使用 queueDeclare 来声明一个队列，但是如果消费者在同一个信道上订阅了另一个队列，就无法再声明队列，需先取消订阅，然后将信道置为“传输”模式后，才能声明队列；
 - 使用 queueBind 方法来将队列和交换器进行绑定；
 - 使用 exchangeBind 方法将交换器和交换器进行绑定。生产者发送消息至交换器 source 中，交换器 source 根据路由键找到与其匹配的另一个交换器 destination，并把消息转发给 destination，进而存储在 destination 绑定的队列 queue 中。
-![image.png](attachment:image.png)
+
+![avatar](chapter_3_p1.png)
 
 ### 何时创建
 　　RabbitMQ 的消息存储在队列中，交换器的使用并不真正耗费服务器的性能，而队列会，要衡量 RabbitMQ 当前的 QPS 看队列即可。<br />

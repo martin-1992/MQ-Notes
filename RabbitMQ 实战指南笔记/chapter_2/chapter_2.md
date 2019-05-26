@@ -1,4 +1,3 @@
-
 ## RabbitMQ 入门
 　　RabbitMQ 整体上是一个生产者与消费者模型，主要负责接收、存储和转发消息。
   
@@ -11,7 +10,7 @@
 
 　　下图为生产者将消息存入 RabbitMQ Broker，消费者从 Broker 中消费数据的流程：
   
-![image.png](attachment:image.png)
+![avatar](chapter_2_p1.png)
 
 ### 队列
 　　队列，是 RabbitMQ 的内部对象，用于存储消息。**多个消费者可订阅同一个队列，这时队列中的消费会被平均分摊给多个消费者进行处理，而不是每个消息者都收到所有的消息。**
@@ -19,7 +18,7 @@
 ### 交换器
 　　生产者将消息发送到 Exchange（交换器），由交换器将消息路由到一个或多个队列中，路由不到，则返回给生产者或丢弃。
   
-![image.png](attachment:image.png)
+![avatar](chapter_2_p2.png)
 
 ### 路由键
 　　RoutingKey，路由键。生产者将消息发给交换器时，会指定一个路由键，用来指定这个消息的路由规则，这个路由键配合交换器类型和绑定键一起使用才能生效。<br />
@@ -28,7 +27,7 @@
 ### 绑定键
 　　RabbitMQ 通过绑定将交换器与队列关联起来，绑定键对应队列，绑定键可相同。如下图：
   
-![image.png](attachment:image.png)
+![avatar](chapter_2_p3.png)
 
 ### 交换器、路由键、绑定键三者的关键
 　　交换器相当于投递包裹的邮箱，路由键相当于填写在包裹上的地址，绑定键相当于包裹的目的地。当填写在包裹上的地址和实际想要投递的地址相匹配时，包裹才会被正确投递到目的地，即队列中。<br />
@@ -39,11 +38,11 @@
 - fanout，把所有发送到该交换器的消息路由到所有与该交换器绑定的队列中；
 - direct，把消息路由到那些路由键和绑定键完全匹配的队列中。如下图，设置路由键为“debug”，消息只会路由到队列 2，设置为“warning”，则路由到队列 1 和队列 2；
 
-![image.png](attachment:image.png)
+![avatar](chapter_2_p4.png)
 
 - topic，按规则匹配。如下图，有三种绑定键为：\*.rabbitmq.\*、\*.*.client、com.#。路由键为“com.hidden.client”的消息路由到队列 2，路由键为“java.rabbitmq.demo”的消息路由到队列1，路由键为“java.util.concurrent”的消息没有匹配的，会被丢弃或返回给生产者；
 
-![image.png](attachment:image.png)
+![avatar](chapter_2_p5.png)
 
 - headers，根据发送的消息内容中的 headers 属性来匹配，性能很差，很少用。
 
@@ -71,7 +70,7 @@
 ### 连接和信道
 　　生产者和消费者都需要和 RabbitMQ Broker 建立 TCP 连接，当连接建立后，客户端再创建一个 AMQP 信道，每个信道都会指派一个唯一的 ID。信道是建立在连接之上的虚拟连接，一个 TCP 连接有多个信道（连接），RabbitMQ 处理的每条 AMQP 指令是通过信道完成的。
 
-![image.png](attachment:image.png)
+![avatar](chapter_2_p6.png)
 
 　　通过在一个 TCP 连接上建立多个信道，可复用 TCP 连接，减少性能开销，因为建立和销毁 TCP 连接是昂贵的开销。<br />
 
@@ -106,4 +105,4 @@ connection.close();
 
 　　下图为流转过程：
   
-![image.png](attachment:image.png)
+![avatar](chapter_2_p7.png)

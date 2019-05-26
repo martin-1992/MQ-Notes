@@ -7,7 +7,7 @@
 
 - **mandatory 参数，为 true 时会调用 Basic.Return 命令将消息返回给生产者，false 则直接丢弃消息。**通过调用 channel.addReturnListener 来添加 ReturnListener 监听器实现，让生产者获取获取没有路由到队列的消息，如下监听器 ReturnListener 监听到 Basic.Return 返回的消息；
 
-![image.png](attachment:image.png)
+![avatar](chapter_4_p1.png)
 
 - **immediate 参数，为 true 时，如果该消息关联的队列上有消费者，则立刻投递。**如果所有匹配的队列上都没消费者，则直接将消息返还给生产者，不用将消息存入队列等待消费者。而 mandatory 参数不管队列上有没消费者，只要能匹配上就会存入队列中。
 
@@ -15,7 +15,7 @@
 　　设置 mandatory 参数，需要添加 ReturnListener 监听器来获取返回的消息，生产者代码变得复杂。换种方式，使用备份交换器，将返回的消息存储在 RabbitMQ 中，需要时在处理。<br />
 　　备份交换器可通过在声明交换器（调用 channel.exchangeDeclare 方法）的时候添加 alternate-exchange 参数来实现，也可通过策略方式实现。
   
-![image.png](attachment:image.png)
+![avatar](chapter_4_p2.png)
 
 　　备份交换器的几种特殊情况：
   
@@ -36,7 +36,7 @@
 - 消息过期；
 - 队列达到最大长度，放不下新消息。
 
-![image.png](attachment:image.png)
+![avatar](chapter_4_p3.png)
 
 　　上图过程，生产者发送一条携带路由键为 “rk”的消息，经过交换器 exchange.normal 顺利存储到队列 queue.normal 中。由于队列 queue.normal 设置过期时间为 10s，在这 10s 内没有消费者消费这条消息，所以该消息过期，被丢给死信交换器 exchange.dlx 中，找到与 exchange.dlx 匹配的死信队列 queue.dlx 并存储。
 
@@ -48,7 +48,7 @@
 
 　　死信队列可作为延迟队列，假设要获取延迟 10 秒的消息。首先正常队列的过期时间设为 10 秒，过期后该消息会存入死信队列，在从死信队列中获取延迟 10 秒后的信息。
   
-![image.png](attachment:image.png)
+![avatar](chapter_4_p4.png)
 
 ### 优先级队列
 　　具有高优先级的队列就有高的优先权，即优先级高的消息会被优先消费，通过设置队列的 x-max-priority 参数来实现。<br />
@@ -59,7 +59,7 @@
 　　假设有两台服务器 A 和 B，一个应用部署在 A 服务器上，想要调用 B 服务器上应用提供的函数或方法。由于不在同一个内存空间，不能直接调用，需要通过网络来表达调用的语义和传达调用的数据。<br />
 　　在 RabbitMQ 中进行 RPC 是很简单的，客户端发送请求消息，服务端回复响应的消息。为了接收响应的消息，需要在请求消息中发送一个回调队列。
   
-![image.png](attachment:image.png)
+![avatar](chapter_4_p5.png)
 
 #### RPC 的处理流程：
   
@@ -86,7 +86,7 @@
 - **通过事务机制实现。**channel.txSelect 将当前信道设置成事务模式，使用 channel.txCommit 来提交事务。如果事务提交成功，则消息一定到达了 RabbitMQ 中，如果提交不成功，则会使用 channel.txRollback 进行回滚。事务机制在一条消息发送后会使发送端阻塞，等待 RabbitMQ 回应后，才发送下一条信息。串行处理，很耗性能；
 - **通过发送方确认机制实现。**生产者将信道设置成 confirm（确认）模式，所有在该信道上面发布的消息都会被指派一个唯一的 ID（从 1 开始），当消息投递到队列后，RabbitMQ 会发送一个确认（Basic.Ack）给生产者（包含消息的唯一 ID），这样生产者就知道消息已经到达队列。发送方确认机制是异步的，这点与事务机制不同，它可以在等待返回确认消息的同时继续发送下一条消息。
 
-![image.png](attachment:image.png)
+![avatar](chapter_4_p6.png)
 
 #### 改进发送方确认机制的使用方式
 　　利用发送消息后不需要同步确认的优势：
